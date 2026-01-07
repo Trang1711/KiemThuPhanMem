@@ -24,4 +24,29 @@ public class StudentAnalyzer {
         }
         return excellentCount;
     }
+
+    /**
+     * Tính điểm trung bình hợp lệ (từ 0 đến 10)
+     * 
+     * @param scores danh sách điểm
+     * @return điểm trung bình của các điểm hợp lệ
+     */
+    public double calculateValidAverage(List<Double> scores) {
+        if (scores == null || scores.isEmpty())
+            return 0.0;
+
+        double sum = 0;
+        int validCount = 0;
+
+        // Tính tổng điểm hợp lệ (từ 0 đến 10) và đếm số điểm hợp lệ
+        for (Double score : scores) {
+            if (score >= 0 && score <= 10) {
+                sum += score;
+                validCount++;
+            }
+        }
+
+        // Trả về điểm trung bình hoặc 0 nếu không có điểm hợp lệ
+        return validCount == 0 ? 0.0 : sum / validCount;
+    }
 }
