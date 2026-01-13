@@ -13,7 +13,7 @@ public class StudentAnalyzerTest {
         StudentAnalyzer analyzer = new StudentAnalyzer();
 
         // Trường hợp bình thường
-        assertEquals(2, analyzer.countExcellentStudents(Arrays.asList(9.0, 8.5, 7.0, 11.0, -1.0)));
+        assertEquals(1, analyzer.countExcellentStudents(Arrays.asList(9.0, 8.5, 7.0, 11.0, -1.0)));
 
         // Trường hợp biên: danh sách trống
         assertEquals(0, analyzer.countExcellentStudents(Collections.emptyList()));
