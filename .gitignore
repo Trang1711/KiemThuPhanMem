@@ -34,7 +34,6 @@ node_modules/
 # Cypress cache & artifacts
 .cypress/
 cypress/screenshots/
-cypress/videos/
 cypress/downloads/
 
 # Cypress env
@@ -94,7 +93,6 @@ logs/
 *.png
 *.jpg
 *.jpeg
-*.mp4
 
 ####################################
 # ===== TEST OUTPUT =====
