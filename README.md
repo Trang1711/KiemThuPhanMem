@@ -112,74 +112,83 @@ Thực hành kiểm thử tự động với Cypress trên trang web mẫu.
 
 **Mô tả:** Đăng nhập với tài khoản hợp lệ, thêm sản phẩm vào giỏ hàng, tiến hành thanh toán và xác nhận việc chuyển đến trang xác nhận.
 
-## 2.4. Kiểm Thử StudentAnalyzer với JUnit
+## 2.4. Kiểm Thử `StudentAnalyzer` với JUnit
 
-Trong bài tập StudentAnalyzer, sinh viên thực hiện kiểm thử đơn vị bằng JUnit, áp dụng các kỹ thuật thiết kế ca kiểm thử và đo độ bao phủ mã nguồn.
+Trong bài tập `StudentAnalyzer`, sinh viên thực hiện kiểm thử đơn vị (unit test) bằng JUnit, áp dụng các kỹ thuật thiết kế ca kiểm thử (test case design techniques) và đo độ bao phủ mã nguồn (code coverage) bằng JaCoCo.
 
-2.4.1. Kiểm Thử với Bảng Quyết Định (Decision Table – DT)
+### 2.4.1. Kiểm Thử với Bảng Quyết Định (Decision Table – DT)
 
-Ký thuật Decision Table được dùng để liệt kê các điều kiện đầu vào và hành vi mong đợi của chương trình. Các bảng quyết định được xây dựng cho hai phương thức:
+Kỹ thuật Decision Table được dùng để liệt kê rõ ràng các điều kiện đầu vào và hành vi mong đợi của chương trình.  
+Trong bài này, bảng quyết định được xây dựng cho hai phương thức:
 
-countExcellentStudents(List<Double> scores)
+- `countExcellentStudents(List<Double> scores)`
+- `calculateValidAverage(List<Double> scores)`
 
-calculateValidAverage(List<Double> scores)
+Các trường hợp điển hình được kiểm thử bao gồm:
 
-Các trường hợp điển hình được kiểm thử:
+- `scores == null`
+- `scores` rỗng
+- Không có điểm hợp lệ
+- Có điểm hợp lệ nhưng không có học sinh Giỏi (`score >= 8.0`)
+- Có học sinh Giỏi và trả về số lượng chính xác
+- Có điểm hợp lệ để tính trung bình hợp lệ
 
-scores == null
+Mỗi quy tắc trong bảng quyết định được ánh xạ thành **ít nhất một ca kiểm thử JUnit**, đảm bảo:
 
-scores rỗng
+- Mỗi tổ hợp điều kiện – kết quả mong đợi đều có test đại diện.
+- Hạn chế trùng lặp không cần thiết nhưng vẫn đảm bảo bao phủ đầy đủ các quy tắc trong Decision Table.
 
-Không có điểm hợp lệ
+### 2.4.2. Kiểm Thử với Giá Trị Biên (Boundary Value Analysis – BVA)
 
-Có điểm hợp lệ nhưng không có học sinh Giỏi (>= 8.0)
+Kỹ thuật BVA được sử dụng để kiểm tra hành vi của chương trình tại các vùng biên “nhạy cảm” – nơi lỗi thường xuất hiện.  
+Các biên trong bài toán bao gồm:
 
-Có học sinh Giỏi và trả về số lượng chính xác
+- Biên miền hợp lệ: `0.0` và `10.0`
+- Biên ngưỡng Giỏi: `7.99`, `8.0`, `9.0`
+- Giá trị ngoài miền: `< 0.0`, `> 10.0`
+- Phần tử `null` trong danh sách
 
-Có điểm hợp lệ để tính trung bình hợp lệ
+Các ca kiểm thử được thiết kế nhằm:
 
-Mỗi quy tắc trong bảng quyết định được ánh xạ thành ít nhất một ca kiểm thử JUnit.
+- Kiểm tra điểm **ngay dưới** và **ngay trên** ngưỡng Giỏi (`7.99` vs `8.0`).
+- Kiểm tra các giá trị **biên của miền hợp lệ** (`0.0`, `10.0`).
+- Kiểm tra trường hợp **hỗn hợp**: điểm hợp lệ, không hợp lệ và `null` cùng xuất hiện trong một danh sách.
 
-2.4.2. Kiểm Thử với Giá Trị Biên (Boundary Value Analysis – BVA)
+### 2.4.3. Kiểm Thử với Lớp Tương Đương (Equivalence Partitioning – EP)
 
-Kỹ thuật BVA được sử dụng để kiểm tra hành vi của chương trình tại các vùng biên "nhạy cảm". Các biên trong bài bao gồm:
+Kỹ thuật EP được áp dụng để chia miền giá trị đầu vào thành các lớp dữ liệu mà chương trình xử lý theo cách tương tự.  
+Trong bài này, các lớp tương đương chính bao gồm:
 
-Biên miền hợp lệ: 0.0 và 10.0
+- `scores == null`
+- `scores` rỗng
+- `scores` không rỗng nhưng **không có điểm hợp lệ**
+- `scores` có **ít nhất một điểm hợp lệ** (có thể kèm giá trị invalid và `null`)
 
-Biên ngưỡng Giỏi: 7.99, 8.0, 9.0
+Đối với từng lớp tương đương, một ca kiểm thử đại diện được lựa chọn với mục tiêu:
 
-Giá trị ngoài miền: < 0.0, > 10.0
+- Giảm số lượng test trùng lặp.
+- Vẫn đảm bảo bao phủ hành vi xử lý của chương trình đối với từng lớp dữ liệu khác nhau.
+- Tối ưu thời gian chạy test mà không làm giảm chất lượng kiểm thử.
 
-Phần tử null
+### 2.4.4. Đo Độ Bao Phủ Mã Nguồn với JaCoCo
 
-Các ca kiểm thử được thiết kế để:
+Để đánh giá hiệu quả bộ test, dự án sử dụng công cụ **JaCoCo** để đo độ bao phủ mã nguồn:
 
-Kiểm tra điểm ngay dưới và trên ngưỡng Giỏi
+- **Line Coverage**: tỷ lệ số dòng lệnh được thực thi khi chạy test.
+- **Branch Coverage**: tỷ lệ các nhánh rẽ (if/else, switch, …) được bao phủ.
 
-Kiểm tra giá trị biên của miền hợp lệ
+Quy trình thực hiện:
 
-Kiểm tra hỗn hợp hợp lệ, không hợp lệ và null
+1. Chạy lệnh:
+   - Với Maven: `mvn test`
+   - Hoặc với Gradle: `gradle test`
+2. JaCoCo sinh báo cáo HTML trong thư mục `target/site/jacoco` (Maven) hoặc tương ứng với Gradle.
+3. Mở file `index.html` trong trình duyệt để xem báo cáo chi tiết.
 
-2.4.3. Kiểm Thử với Lớp Tương Đương (Equivalence Partitioning – EP)
+Bộ test được thiết kế nhằm:
 
-Kỹ thuật EP được áp dụng để chia miền giá trị đầu vào thành các lớp dữ liệu có xử lý tương tự. Trong bài này, các lớp tương đương chính gồm:
-
-scores == null
-
-scores rỗng
-
-scores không rỗng nhưng không có điểm hợp lệ
-
-scores có điểm hợp lệ (có thể kèm invalid và null)
-
-Đối với từng lớp tương đương, một ca kiểm thử đại diện được chọn nhằm giảm trùng lặp và tăng hiệu quả bao phủ.
-
-2.4.4. Đo Độ Bao Phủ Mã Nguồn với JaCoCo
-
-Để đánh giá hiệu quả kiểm thử, bài sử dụng công cụ JaCoCo để đo độ bao phủ:
-
-Line Coverage: tỷ lệ dòng lệnh được thực thi
-
-Branch Coverage: tỷ lệ nhánh rẽ được bao phủ
-
-Sau khi chạy mvn test hoặc gradle test, JaCoCo sinh báo cáo HTML. Bộ test được thiết kế nhằm đạt độ bao phủ cao cho cả line và branch coverage trên hai phương thức kiểm thử.
+- Đạt **độ bao phủ cao** cho cả line coverage và branch coverage.
+- Đảm bảo mọi nhánh xử lý quan trọng trong hai phương thức `countExcellentStudents` và `calculateValidAverage` đều được kiểm tra.
+- Hạn chế tối đa các nhánh “chưa được chạm tới” (uncovered branches) trong báo cáo JaCoCo.
+ Dưới đây là hình ảnh minh chứng đã thực hiện đo bao phủ kiểm thử:
+ ![Ảnh minh họa](./jacoco.png)
