@@ -111,3 +111,75 @@ Thực hành kiểm thử tự động với Cypress trên trang web mẫu.
 #### Quy trình thanh toán
 
 **Mô tả:** Đăng nhập với tài khoản hợp lệ, thêm sản phẩm vào giỏ hàng, tiến hành thanh toán và xác nhận việc chuyển đến trang xác nhận.
+
+## 2.4. Kiểm Thử StudentAnalyzer với JUnit
+
+Trong bài tập StudentAnalyzer, sinh viên thực hiện kiểm thử đơn vị bằng JUnit, áp dụng các kỹ thuật thiết kế ca kiểm thử và đo độ bao phủ mã nguồn.
+
+2.4.1. Kiểm Thử với Bảng Quyết Định (Decision Table – DT)
+
+Ký thuật Decision Table được dùng để liệt kê các điều kiện đầu vào và hành vi mong đợi của chương trình. Các bảng quyết định được xây dựng cho hai phương thức:
+
+countExcellentStudents(List<Double> scores)
+
+calculateValidAverage(List<Double> scores)
+
+Các trường hợp điển hình được kiểm thử:
+
+scores == null
+
+scores rỗng
+
+Không có điểm hợp lệ
+
+Có điểm hợp lệ nhưng không có học sinh Giỏi (>= 8.0)
+
+Có học sinh Giỏi và trả về số lượng chính xác
+
+Có điểm hợp lệ để tính trung bình hợp lệ
+
+Mỗi quy tắc trong bảng quyết định được ánh xạ thành ít nhất một ca kiểm thử JUnit.
+
+2.4.2. Kiểm Thử với Giá Trị Biên (Boundary Value Analysis – BVA)
+
+Kỹ thuật BVA được sử dụng để kiểm tra hành vi của chương trình tại các vùng biên "nhạy cảm". Các biên trong bài bao gồm:
+
+Biên miền hợp lệ: 0.0 và 10.0
+
+Biên ngưỡng Giỏi: 7.99, 8.0, 9.0
+
+Giá trị ngoài miền: < 0.0, > 10.0
+
+Phần tử null
+
+Các ca kiểm thử được thiết kế để:
+
+Kiểm tra điểm ngay dưới và trên ngưỡng Giỏi
+
+Kiểm tra giá trị biên của miền hợp lệ
+
+Kiểm tra hỗn hợp hợp lệ, không hợp lệ và null
+
+2.4.3. Kiểm Thử với Lớp Tương Đương (Equivalence Partitioning – EP)
+
+Kỹ thuật EP được áp dụng để chia miền giá trị đầu vào thành các lớp dữ liệu có xử lý tương tự. Trong bài này, các lớp tương đương chính gồm:
+
+scores == null
+
+scores rỗng
+
+scores không rỗng nhưng không có điểm hợp lệ
+
+scores có điểm hợp lệ (có thể kèm invalid và null)
+
+Đối với từng lớp tương đương, một ca kiểm thử đại diện được chọn nhằm giảm trùng lặp và tăng hiệu quả bao phủ.
+
+2.4.4. Đo Độ Bao Phủ Mã Nguồn với JaCoCo
+
+Để đánh giá hiệu quả kiểm thử, bài sử dụng công cụ JaCoCo để đo độ bao phủ:
+
+Line Coverage: tỷ lệ dòng lệnh được thực thi
+
+Branch Coverage: tỷ lệ nhánh rẽ được bao phủ
+
+Sau khi chạy mvn test hoặc gradle test, JaCoCo sinh báo cáo HTML. Bộ test được thiết kế nhằm đạt độ bao phủ cao cho cả line và branch coverage trên hai phương thức kiểm thử.
