@@ -3,21 +3,33 @@ package com.cmcu;
 import java.util.List;
 
 public class StudentAnalyzer {
+
     /**
      * Phân tích điểm số và trả về số lượng học sinh đạt loại Giỏi.
-     * 
-     * @param scores danh sách điểm số từ 0 đến 10
-     * @return số học sinh đạt loại Giỏi (>= 8.0)
-     *         - Bỏ qua điểm âm hoặc lớn hơn 10 (coi là dữ liệu sai)
-     *         - Nếu danh sách rỗng, trả về 0
+     *
+     * Quy ước:
+     * - Điểm hợp lệ nằm trong khoảng [0; 10].
+     * - Học sinh Giỏi nếu điểm >= 8.0 và <= 10.0.
+     * - Bỏ qua:
+     * + điểm âm,
+     * + điểm lớn hơn 10,
+     * + phần tử null trong danh sách.
+     * - Nếu danh sách null hoặc rỗng, trả về 0.
+     *
+     * @param scores danh sách điểm số
+     * @return số học sinh đạt loại Giỏi
      */
     public int countExcellentStudents(List<Double> scores) {
-        if (scores == null || scores.isEmpty())
+        if (scores == null || scores.isEmpty()) {
             return 0;
+        }
 
         int excellentCount = 0;
         for (Double score : scores) {
-            // Kiểm tra điểm hợp lệ từ 0 đến 10 và đếm học sinh đạt Giỏi (>= 8)
+            if (score == null) {
+                continue; // bỏ qua phần tử null
+            }
+            // Kiểm tra điểm hợp lệ và đếm học sinh đạt Giỏi (>= 8.0)
             if (score >= 8.0 && score <= 10.0) {
                 excellentCount++;
             }
@@ -26,27 +38,41 @@ public class StudentAnalyzer {
     }
 
     /**
-     * Tính điểm trung bình hợp lệ (từ 0 đến 10)
-     * 
+     * Tính điểm trung bình của các điểm hợp lệ.
+     *
+     * Quy ước:
+     * - Điểm hợp lệ: 0 <= điểm <= 10.
+     * - Bỏ qua:
+     * + điểm âm,
+     * + điểm lớn hơn 10,
+     * + phần tử null trong danh sách.
+     * - Nếu danh sách null, rỗng hoặc không có điểm hợp lệ, trả về 0.0.
+     *
      * @param scores danh sách điểm
-     * @return điểm trung bình của các điểm hợp lệ
+     * @return điểm trung bình của các điểm hợp lệ, hoặc 0.0 nếu không có điểm hợp
+     *         lệ
      */
     public double calculateValidAverage(List<Double> scores) {
-        if (scores == null || scores.isEmpty())
+        if (scores == null || scores.isEmpty()) {
             return 0.0;
+        }
 
-        double sum = 0;
+        double sum = 0.0;
         int validCount = 0;
 
-        // Tính tổng điểm hợp lệ (từ 0 đến 10) và đếm số điểm hợp lệ
         for (Double score : scores) {
-            if (score >= 0 && score <= 10) {
+            if (score == null) {
+                continue; // bỏ qua phần tử null
+            }
+            if (score >= 0.0 && score <= 10.0) {
                 sum += score;
                 validCount++;
             }
         }
 
-        // Trả về điểm trung bình hoặc 0 nếu không có điểm hợp lệ
-        return validCount == 0 ? 0.0 : sum / validCount;
+        if (validCount == 0) {
+            return 0.0;
+        }
+        return sum / validCount;
     }
 }
